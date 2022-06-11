@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitExecWrapper", "src\GitExecWrapper.csproj", "{A0054DDD-6990-4169-830D-D47AB3019DD3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{A9DB511F-A737-459A-9344-BEF86866B1C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitExecWrapper.TestCli", "test\GitExecWrapper.TestCli\GitExecWrapper.TestCli.csproj", "{61323666-3ED4-4F3F-B090-E11E0E8D392E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitExecWrapper.UnitTests", "test\GitExecWrapper.UnitTests\GitExecWrapper.UnitTests.csproj", "{CF431C56-B02B-408F-877D-3EEDE706F597}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A0054DDD-6990-4169-830D-D47AB3019DD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0054DDD-6990-4169-830D-D47AB3019DD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0054DDD-6990-4169-830D-D47AB3019DD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0054DDD-6990-4169-830D-D47AB3019DD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61323666-3ED4-4F3F-B090-E11E0E8D392E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61323666-3ED4-4F3F-B090-E11E0E8D392E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61323666-3ED4-4F3F-B090-E11E0E8D392E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61323666-3ED4-4F3F-B090-E11E0E8D392E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF431C56-B02B-408F-877D-3EEDE706F597}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF431C56-B02B-408F-877D-3EEDE706F597}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF431C56-B02B-408F-877D-3EEDE706F597}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF431C56-B02B-408F-877D-3EEDE706F597}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{61323666-3ED4-4F3F-B090-E11E0E8D392E} = {A9DB511F-A737-459A-9344-BEF86866B1C3}
+		{CF431C56-B02B-408F-877D-3EEDE706F597} = {A9DB511F-A737-459A-9344-BEF86866B1C3}
+	EndGlobalSection
+EndGlobal
