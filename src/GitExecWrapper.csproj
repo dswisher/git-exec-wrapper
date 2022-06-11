@@ -1,13 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <Nullable>disable</Nullable>
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <ImplicitUsings>disable</ImplicitUsings>
-    <Nullable>disable</Nullable>
-  </PropertyGroup>
+        <CodeAnalysisRuleSet>stylecop.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="SimpleExec" Version="10.0.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="SimpleExec" Version="10.0.0" />
 
+        <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AdditionalFiles Include="stylecop.json" />
+    </ItemGroup>
 </Project>

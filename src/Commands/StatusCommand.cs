@@ -1,3 +1,6 @@
+// Copyright (c) Doug Swisher. All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 using System.Collections.Generic;
 
 namespace GitExecWrapper.Commands
@@ -10,16 +13,16 @@ namespace GitExecWrapper.Commands
         }
 
 
+        public string RepoPath { get; }
+        public bool Ignored { get; private set; }
+
+
         public StatusCommand IncludeIgnored(bool ignored = true)
         {
             Ignored = ignored;
 
             return this;
         }
-
-
-        public string RepoPath { get; }
-        public bool Ignored { get; private set; }
 
 
         public override string ToString()

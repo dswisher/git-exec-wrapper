@@ -1,3 +1,6 @@
+// Copyright (c) Doug Swisher. All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +13,9 @@ namespace GitExecWrapper.Parsers
     {
         private static readonly Dictionary<char, FileStatus> CodeMap = new Dictionary<char, FileStatus>();
 
-        private readonly Regex changedTracked = new Regex(@"^1 (?<flag>..) (?<sub>....) (?<mode1>\d{6}) (?<mode2>\d{6}) (?<mode3>\d{6}) (?<name1>\S+) (?<name2>\S+) (?<path>.+)$",
-            RegexOptions.Compiled);
-        private readonly Regex flagAndPath = new Regex(@"^(?<flag>.) (?<path>.+)$",
+        private readonly Regex flagAndPath = new Regex(@"^(?<flag>.) (?<path>.+)$", RegexOptions.Compiled);
+        private readonly Regex changedTracked = new Regex(
+            @"^1 (?<flag>..) (?<sub>....) (?<mode1>\d{6}) (?<mode2>\d{6}) (?<mode3>\d{6}) (?<name1>\S+) (?<name2>\S+) (?<path>.+)$",
             RegexOptions.Compiled);
 
 

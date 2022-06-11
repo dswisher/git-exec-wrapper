@@ -1,3 +1,6 @@
+// Copyright (c) Doug Swisher. All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 using System.Threading;
 using System.Threading.Tasks;
 using GitExecWrapper.Commands;
@@ -13,7 +16,9 @@ namespace GitExecWrapper.Helpers
             var exitCode = 0;
             var args = command.ToString();
 
-            var (stdout, stderr) = await SimpleExec.Command.ReadAsync("git", args,
+            var (stdout, stderr) = await SimpleExec.Command.ReadAsync(
+                "git",
+                args,
                 workingDirectory: command.RepoPath,
                 handleExitCode: code => (exitCode = code) <= 128,
                 cancellationToken: cancellationToken);
