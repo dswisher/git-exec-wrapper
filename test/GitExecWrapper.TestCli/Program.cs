@@ -47,6 +47,14 @@ namespace GitExecWrapper.TestCli
                 case TestStatusOptions s:
                     await TestStatusCommand.RunAsync(s, cancellationToken);
                     break;
+
+                case TestFetchOptions f:
+                    await TestFetchCommand.RunAsync(f, cancellationToken);
+                    break;
+
+                default:
+                    Console.WriteLine("Options not handled: {0}", obj.GetType().Name);
+                    break;
             }
         }
     }

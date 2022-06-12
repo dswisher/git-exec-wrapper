@@ -17,5 +17,13 @@ namespace GitExecWrapper
 
             return await command.ExecAsync(cancellationToken);
         }
+
+
+        public static async Task<FetchResult> FetchAsync(string repoPath, CancellationToken cancellationToken)
+        {
+            var command = new FetchCommand(repoPath);
+
+            return await command.ExecAsync(cancellationToken);
+        }
     }
 }

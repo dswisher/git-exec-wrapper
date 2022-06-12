@@ -22,3 +22,8 @@ The value-add in this wrapper library is the code that parses the output from co
 
 TBD.
 
+
+# Related Projects
+
+* [libgit2sharp](https://github.com/libgit2/libgit2sharp) - brings all the might and speed of libgit2, a native Git implementation, to the managed world of .NET
+* [simple-exec](https://github.com/adamralph/simple-exec) - A .NET library that runs external commands.

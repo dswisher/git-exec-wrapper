@@ -23,9 +23,32 @@ namespace GitExecWrapper.Helpers
                 handleExitCode: code => (exitCode = code) <= 128,
                 cancellationToken: cancellationToken);
 
+            var parser = new StatusParser();
+
+            if (exitCode != 0)
+            {
+                parser.ThrowError(exitCode, stderr);
+            }
+
+            return parser.ParseOutput(stdout);
+        }
+
+
+        public static async Task<FetchResult> ExecAsync(this FetchCommand command, CancellationToken cancellationToken)
+        {
+            var exitCode = 0;
+            var args = command.ToString();
+
+            var (stdout, stderr) = await SimpleExec.Command.ReadAsync(
+                "git",
+                args,
+                workingDirectory: command.RepoPath,
+                handleExitCode: code => (exitCode = code) <= 128,
+                cancellationToken: cancellationToken);
+
             DebugHelpers.Dump(exitCode, stdout, stderr);    // TODO - remove this
 
-            var parser = new StatusParser();
+            var parser = new FetchParser();
 
             if (exitCode != 0)
             {
