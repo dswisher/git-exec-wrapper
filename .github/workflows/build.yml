@@ -15,9 +15,6 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Check
-      run: /usr/bin/dotnet --version
-
     - name: Clean Pack
       run: ./build.sh clean pack
       env:
