@@ -1,7 +1,6 @@
 using Nuke.Common;
 using Nuke.Common.CI;
 using Nuke.Common.CI.GitHubActions;
-using Nuke.Common.Execution;
 using Nuke.Common.Git;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
@@ -16,7 +15,6 @@ using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
 
-[CheckBuildProjectConfigurations]
 [ShutdownDotNetAfterServerBuild]
 class Build : NukeBuild
 {
@@ -89,8 +87,9 @@ class Build : NukeBuild
 
             DotNetTest(s => s
                 .EnableNoBuild()
-                .SetDataCollector("XPlat Code Coverage")
-                .SetResultsDirectory(TestResultsDirectory)
+                // TODO - put these back!
+                // .SetDataCollector("XPlat Code Coverage")
+                // .SetResultsDirectory(TestResultsDirectory)
                 .SetProjectFile(project));
         });
 
@@ -110,7 +109,7 @@ class Build : NukeBuild
 
     Target Pack => _ => _
         .Description("Create nuget package.")
-        .DependsOn(CodeCoverage)
+        .DependsOn(Test)    // TODO - change back to CodeCoverage
         .Triggers(PublishToGithub)
         .Executes(() =>
         {
