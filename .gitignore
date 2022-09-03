@@ -4,6 +4,7 @@ bin
 
 .idea
 .vs
+.vscode
 
 *.user
 
