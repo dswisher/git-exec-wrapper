@@ -86,11 +86,11 @@ class Build : NukeBuild
             Project project = Solution.GetProject("GitExecWrapper.UnitTests");
 
             DotNetTest(s => s
-                .EnableNoBuild()
-                // TODO - put these back!
-                // .SetDataCollector("XPlat Code Coverage")
-                // .SetResultsDirectory(TestResultsDirectory)
-                .SetProjectFile(project));
+                .SetProjectFile(project)
+                .SetConfiguration(Configuration)
+                .SetDataCollector("XPlat Code Coverage")
+                .SetResultsDirectory(TestResultsDirectory)
+                .EnableNoBuild());
         });
 
     Target CodeCoverage => _ => _
@@ -109,7 +109,7 @@ class Build : NukeBuild
 
     Target Pack => _ => _
         .Description("Create nuget package.")
-        .DependsOn(Test)    // TODO - change back to CodeCoverage
+        .DependsOn(CodeCoverage)
         .Triggers(PublishToGithub)
         .Executes(() =>
         {
