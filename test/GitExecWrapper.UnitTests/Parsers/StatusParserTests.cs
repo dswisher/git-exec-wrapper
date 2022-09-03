@@ -1,4 +1,6 @@
-using System.IO;
+// Copyright (c) Doug Swisher. All Rights Reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 using FluentAssertions;
 using GitExecWrapper.Models;
 using GitExecWrapper.Parsers;
@@ -15,7 +17,7 @@ namespace GitExecWrapper.UnitTests.Parsers
         private const string Commits = "0000000000000000000000000000000000000000 73325c8c52f86fc932bbebfda1ad04f424330a79";
         private const string TrackedFile = " " + Modes + " " + Commits + " " + FilePath;
 
-        private readonly StatusParser parser = new();
+        private readonly StatusParser parser = new ();
 
 
         [Fact]

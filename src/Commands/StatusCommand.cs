@@ -7,6 +7,8 @@ namespace GitExecWrapper.Commands
 {
     public class StatusCommand
     {
+        private bool includeIgnored;
+
         public StatusCommand(string repoPath)
         {
             RepoPath = repoPath;
@@ -14,12 +16,11 @@ namespace GitExecWrapper.Commands
 
 
         public string RepoPath { get; }
-        public bool Ignored { get; private set; }
 
 
         public StatusCommand IncludeIgnored(bool ignored = true)
         {
-            Ignored = ignored;
+            includeIgnored = ignored;
 
             return this;
         }
@@ -32,7 +33,7 @@ namespace GitExecWrapper.Commands
                 "status", "--porcelain=2", "--branch", "--untracked-files=all", "--show-stash"
             };
 
-            if (Ignored)
+            if (includeIgnored)
             {
                 items.Add("--ignored");
             }

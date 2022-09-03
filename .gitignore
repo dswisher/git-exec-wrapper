@@ -7,3 +7,8 @@ bin
 
 *.user
 
+.nuke/temp
+
+artifacts
+test-results
+

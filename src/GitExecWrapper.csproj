@@ -5,6 +5,14 @@
         <Nullable>disable</Nullable>
 
         <CodeAnalysisRuleSet>stylecop.ruleset</CodeAnalysisRuleSet>
+
+        <Title>Git Exec Wrapper</Title>
+        <Authors>Doug Swisher</Authors>
+        <Copyright>Doug Swisher</Copyright>
+        <PackageProjectUrl>https://github.com/dswisher/git-exec-wrapper</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/dswisher/git-exec-wrapper</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
     <ItemGroup>
