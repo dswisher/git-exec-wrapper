@@ -1,5 +1,6 @@
 using Nuke.Common;
 using Nuke.Common.CI;
+using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.Execution;
 using Nuke.Common.Git;
 using Nuke.Common.IO;
@@ -11,6 +12,7 @@ using Nuke.Common.Tools.ReportGenerator;
 using Nuke.Common.Utilities.Collections;
 using Serilog;
 using static Nuke.Common.IO.FileSystemTasks;
+using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
 
@@ -40,8 +42,13 @@ class Build : NukeBuild
     AbsolutePath ArtifactsDirectory => RootDirectory / "artifacts";
     AbsolutePath TestResultsDirectory => RootDirectory / "test-results";
 
+    static GitHubActions GitHubActions => GitHubActions.Instance;
+    string GithubNugetFeed => GitHubActions != null
+        ? $"https://nuget.pkg.github.com/{GitHubActions.RepositoryOwner}/index.json"
+        : null;
 
     Target Clean => _ => _
+        .Description("Clean house.")
         .Before(Restore)
         .Executes(() =>
         {
@@ -52,6 +59,7 @@ class Build : NukeBuild
         });
 
     Target Restore => _ => _
+        .Description("Restore nuget packages for the solution.")
         .Executes(() =>
         {
             DotNetRestore(s => s
@@ -59,6 +67,7 @@ class Build : NukeBuild
         });
 
     Target Compile => _ => _
+        .Description("Build the solution.")
         .DependsOn(Restore)
         .Executes(() =>
         {
@@ -72,6 +81,7 @@ class Build : NukeBuild
         });
 
     Target Test => _ => _
+        .Description("Run unit tests.")
         .DependsOn(Compile)
         .Executes(() =>
         {
@@ -85,6 +95,7 @@ class Build : NukeBuild
         });
 
     Target CodeCoverage => _ => _
+        .Description("Generate code coverage report.")
         .DependsOn(Test)
         .Executes(() =>
         {
@@ -98,7 +109,9 @@ class Build : NukeBuild
         });
 
     Target Pack => _ => _
+        .Description("Create nuget package.")
         .DependsOn(CodeCoverage)
+        .Triggers(PublishToGithub)
         .Executes(() =>
         {
             Project project = Solution.GetProject("GitExecWrapper");
@@ -112,6 +125,28 @@ class Build : NukeBuild
                 .EnableNoLogo()
                 .EnableNoRestore()
                 .EnableContinuousIntegrationBuild()
-                .SetVersion(GitVersion.NuGetVersionV2));
+                .SetVersion(GitVersion.NuGetVersionV2)
+                .SetAssemblyVersion(GitVersion.AssemblySemVer)
+                .SetInformationalVersion(GitVersion.InformationalVersion)
+                .SetFileVersion(GitVersion.AssemblySemFileVer));
+        });
+
+    Target PublishToGithub => _ => _
+        .Description("Publish nuget alpha packages to Github.")
+        .OnlyWhenStatic(() => GitRepository.IsOnDevelopBranch())
+        .OnlyWhenStatic(() => Configuration.Equals(Configuration.Release))
+        .OnlyWhenStatic(() => GitHubActions != null)
+        .Executes(() =>
+        {
+            GlobFiles(ArtifactsDirectory, "*.nupkg")
+                .ForEach(x =>
+                {
+                    DotNetNuGetPush(s => s
+                        .SetTargetPath(x)
+                        .SetSource(GithubNugetFeed)
+                        .SetApiKey(GitHubActions.Token)
+                        .EnableSkipDuplicate()
+                    );
+                });
         });
 }

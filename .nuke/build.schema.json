@@ -75,6 +75,7 @@
               "CodeCoverage",
               "Compile",
               "Pack",
+              "PublishToGithub",
               "Restore",
               "Test"
             ]
@@ -94,6 +95,7 @@
               "CodeCoverage",
               "Compile",
               "Pack",
+              "PublishToGithub",
               "Restore",
               "Test"
             ]
