@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitExecWrapper.TestCli", "t
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitExecWrapper.UnitTests", "test\GitExecWrapper.UnitTests\GitExecWrapper.UnitTests.csproj", "{CF431C56-B02B-408F-877D-3EEDE706F597}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "build", "build\build.csproj", "{20B30F18-4C7F-45F2-81CB-AA55B8EDAD82}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{20B30F18-4C7F-45F2-81CB-AA55B8EDAD82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20B30F18-4C7F-45F2-81CB-AA55B8EDAD82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0054DDD-6990-4169-830D-D47AB3019DD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A0054DDD-6990-4169-830D-D47AB3019DD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0054DDD-6990-4169-830D-D47AB3019DD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
