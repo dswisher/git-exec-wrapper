@@ -57,5 +57,71 @@ namespace GitExecWrapper.UnitTests.Parsers
 
             result.Items[0].Path.Should().Be(expectedPath);
         }
+
+
+        [Theory]
+        [InlineData("# branch.ab +0 -0", 0, 0)]
+        [InlineData("# branch.ab +2 -0", 2, 0)]
+        [InlineData("# branch.ab +0 -3", 0, 3)]
+        [InlineData("# branch.ab +413 -301", 413, 301)]
+        public void CanParseAheadBehind(string line, int? ahead, int? behind)
+        {
+            // Arrange
+            var builder = OutputBuilder.Create().AddLine(line);
+
+            // Act
+            var result = parser.ParseOutput(builder.Build());
+
+            // Assert
+            result.CommitsAhead.Should().Be(ahead);
+            result.CommitsBehind.Should().Be(behind);
+        }
+
+
+        [Theory]
+        [InlineData("# branch.oid fa6f4d4459f51a593cf443fbce2cbf1f3821d0ab", "fa6f4d4459f51a593cf443fbce2cbf1f3821d0ab")]
+        [InlineData("# branch.oid (initial)", null)]
+        public void CanParseCurrentCommit(string line, string commit)
+        {
+            // Arrange
+            var builder = OutputBuilder.Create().AddLine(line);
+
+            // Act
+            var result = parser.ParseOutput(builder.Build());
+
+            // Assert
+            result.CurrentCommit.Should().Be(commit);
+        }
+
+
+        [Theory]
+        [InlineData("# branch.head main", "main")]
+        [InlineData("# branch.head (detached)", null)]
+        public void CanParseCurrentBranch(string line, string branch)
+        {
+            // Arrange
+            var builder = OutputBuilder.Create().AddLine(line);
+
+            // Act
+            var result = parser.ParseOutput(builder.Build());
+
+            // Assert
+            result.CurrentBranch.Should().Be(branch);
+        }
+
+
+        [Theory]
+        [InlineData("# branch.upstream origin/develop", "origin/develop")]
+        public void CanParseUpstream(string line, string upstream)
+        {
+            // Arrange
+            var builder = OutputBuilder.Create().AddLine(line);
+
+            // Act
+            var result = parser.ParseOutput(builder.Build());
+
+            // Assert
+            result.Upstream.Should().Be(upstream);
+        }
     }
 }

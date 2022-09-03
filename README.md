@@ -23,6 +23,19 @@ The value-add in this wrapper library is the code that parses the output from co
 TBD.
 
 
+# Alpha Feed
+
+Changes on the `develop` branch will push nuget packages to github's nuget repository.
+These can be consumed by configuring a package source.
+A source can be configured using the `dotnet nuget` command, thusly:
+
+    dotnet nuget add source "https://nuget.pkg.github.com/dswisher/index.json" --name "githubfeed" --username <email> --password <PAT>
+
+The `PAT` above is a github [personal access token](https://github.com/settings/tokens).
+
+The `dotnet nuget` command also has an `update` verb that can be used to update the PAT when it expires after 30 days.
+
+
 # Related Projects
 
 * [libgit2sharp](https://github.com/libgit2/libgit2sharp) - brings all the might and speed of libgit2, a native Git implementation, to the managed world of .NET

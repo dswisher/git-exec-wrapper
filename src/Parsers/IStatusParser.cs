@@ -8,6 +8,6 @@ namespace GitExecWrapper.Parsers
     public interface IStatusParser
     {
         StatusResult ParseOutput(string stdout);
-        public void ThrowError(int code, string stderr);
+        void ThrowError(int code, string stderr);
     }
 }
