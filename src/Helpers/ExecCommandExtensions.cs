@@ -11,7 +11,7 @@ namespace GitExecWrapper.Helpers
 {
     public static class ExecCommandExtensions
     {
-        public static async Task<StatusResult> ExecAsync(this StatusCommand command, CancellationToken cancellationToken)
+        public static async Task<StatusResult> ExecAsync(this StatusCommand command, CancellationToken cancellationToken = default)
         {
             var exitCode = 0;
             var args = command.ToString();
@@ -34,7 +34,7 @@ namespace GitExecWrapper.Helpers
         }
 
 
-        public static async Task<FetchResult> ExecAsync(this FetchCommand command, CancellationToken cancellationToken)
+        public static async Task<FetchResult> ExecAsync(this FetchCommand command, CancellationToken cancellationToken = default)
         {
             var exitCode = 0;
             var args = command.ToString();

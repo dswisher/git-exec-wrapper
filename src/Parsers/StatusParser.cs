@@ -32,6 +32,7 @@ namespace GitExecWrapper.Parsers
             AddPatternHandler(BranchHandlers, @"^# branch.oid (?<sha>.+)$", SetCurrentCommit);
             AddPatternHandler(BranchHandlers, @"^# branch.head (?<name>.+)$", SetCurrentBranch);
             AddPatternHandler(BranchHandlers, @"^# branch.upstream (?<name>.+)$", SetUpstream);
+            AddPatternHandler(BranchHandlers, @"^# stash (?<num>\d+)$", SetStashed);
         }
 
 
@@ -142,6 +143,12 @@ namespace GitExecWrapper.Parsers
         private static void SetUpstream(StatusResult result, Match match)
         {
             result.Upstream = match.Groups["name"].Value;
+        }
+
+
+        private static void SetStashed(StatusResult result, Match match)
+        {
+            result.StashCount = int.Parse(match.Groups["num"].Value);
         }
 
 

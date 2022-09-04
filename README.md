@@ -23,6 +23,14 @@ The value-add in this wrapper library is the code that parses the output from co
 TBD.
 
 
+# Supported (and planned) Git Commands
+
+* [git-branch](https://git-scm.com/docs/git-branch) - TBD
+* [git-fetch](https://git-scm.com/docs/git-fetch) - implementing
+* [git-remote](https://git-scm.com/docs/git-remote) - `show` sub-command planned, others TBD
+* [git-status](https://git-scm.com/docs/git-status) - complete
+
+
 # Alpha Feed
 
 Changes on the `develop` branch will push nuget packages to github's nuget repository.

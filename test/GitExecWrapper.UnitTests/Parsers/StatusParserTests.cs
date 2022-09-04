@@ -123,5 +123,21 @@ namespace GitExecWrapper.UnitTests.Parsers
             // Assert
             result.Upstream.Should().Be(upstream);
         }
+
+
+
+        [Theory]
+        [InlineData("# stash 1", 1)]
+        public void CanParseStashed(string line, int stashed)
+        {
+            // Arrange
+            var builder = OutputBuilder.Create().AddLine(line);
+
+            // Act
+            var result = parser.ParseOutput(builder.Build());
+
+            // Assert
+            result.StashCount.Should().Be(stashed);
+        }
     }
 }

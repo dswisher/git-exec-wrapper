@@ -50,6 +50,11 @@ namespace GitExecWrapper.Models
         public string Upstream { get; internal set; }
 
         /// <summary>
+        /// Gets the number of stash entries.
+        /// </summary>
+        public int StashCount { get; internal set; }
+
+        /// <summary>
         /// Gets the list of changed tracked or untracked entries.
         /// </summary>
         public List<StatusItem> Items { get; }
