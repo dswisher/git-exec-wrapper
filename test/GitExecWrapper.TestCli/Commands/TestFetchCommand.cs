@@ -21,8 +21,15 @@ namespace GitExecWrapper.TestCli.Commands
 
             var fetchResult = await command.ExecAsync(cancellationToken);
 
-            // TODO - print fetch results
-            Console.WriteLine("Fetch complete.");
+            Console.WriteLine("From Repo: {0}", fetchResult.FromRepo);
+
+            Console.WriteLine();
+            Console.WriteLine("Items:");
+
+            foreach (var item in fetchResult.Items)
+            {
+                Console.WriteLine("    {0} {1} {2} -> {3}", item.Status, item.Summary, item.From, item.To);
+            }
         }
     }
 }

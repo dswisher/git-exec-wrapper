@@ -2,55 +2,109 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using GitExecWrapper.Models;
 
 namespace GitExecWrapper.Parsers
 {
-    public class FetchParser : IFetchParser
+    internal class FetchParser : IFetchParser
     {
-        public FetchResult ParseOutput(string stdout)
+        private static readonly Dictionary<string, RefStatus> Flags = new Dictionary<string, RefStatus>();
+        private static readonly List<PatternHandler> BranchHandlers = new List<PatternHandler>();
+
+        static FetchParser()
         {
-            // TODO - parse fetch output
-            return new FetchResult();
+            Flags.Add(" ", RefStatus.Fetched);
+            Flags.Add("+", RefStatus.ForcedUpdate);
+            Flags.Add("-", RefStatus.Pruned);
+            Flags.Add("t", RefStatus.TagUpdate);
+            Flags.Add("*", RefStatus.NewRef);
+            Flags.Add("!", RefStatus.Failed);
+            Flags.Add("=", RefStatus.UpToDate);
+
+            AddPatternHandler(BranchHandlers, @"^ (?<flag>.) +(?<summary>\[[a-z ]+\]) +(?<from>.+) +-> +(?<to>.+)$", HandleLine);
+            AddPatternHandler(BranchHandlers, @"^ (?<flag>.) +(?<summary>[a-z0-9.]+) +(?<from>.+) -> (?<to>.+)$", HandleLine);
         }
 
 
-        // TODO - looks like some info is written to stderr, even for a successful fetch
-#if false
-Exit Code: 0
---- stdout ---
+        public FetchResult ParseOutput(string stdout, string stderr)
+        {
+            var result = new FetchResult();
 
---- stderr ---
-From github.com:Example/fun-repo
- * [new branch]        feature/cool-stuff -> origin/feature/cool-stuff
-#endif
+            // TODO - do we ever need to look at stdout?
 
-#if false
-Exit Code: 0
---- stdout ---
+            // Parse line-by-line
+            bool first = true;
+            var lines = stderr.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+            foreach (var line in lines)
+            {
+                // Ignore the first line, which should be the "From repo" text...
+                if (first)
+                {
+                    result.FromRepo = line.Substring("From ".Length);
+                    first = false;
+                    continue;
+                }
 
---- stderr ---
-From github.com:Example/fun-repo
- = [up to date]        develop                -> origin/develop
- = [up to date]        master                 -> origin/master
-#endif
+                var matched = false;
+                foreach (var item in BranchHandlers)
+                {
+                    var match = item.Pattern.Match(line);
 
-#if false
-Exit Code: 0
---- stdout ---
+                    if (match.Success)
+                    {
+                        item.Handler(result, match);
+                        matched = true;
+                        break;
+                    }
+                }
 
---- stderr ---
-From github.com:Example/fun-repo
-   7b2d11b5..8f5acfa8  develop                 -> origin/develop
- = [up to date]        bugfix/stuff-is-really-broken -> origin/bugfix/stuff-is-really-broken
- = [up to date]        master                  -> origin/master
-   326a8817..215b5531  release                 -> origin/release
-#endif
+                if (!matched)
+                {
+                    throw new Exception($"Could not parse fetch output line: {line}");
+                }
+            }
+
+            return result;
+        }
+
 
         public void ThrowError(int code, string stderr)
         {
             // TODO - deduce some common errors, and throw a nice exception
             throw new Exception($"Boom! Fetch failed!\nCode:{code}\nStdErr:\n{stderr}");
+        }
+
+
+        private static void AddPatternHandler(List<PatternHandler> list, string pattern, Action<FetchResult, Match> handler)
+        {
+            list.Add(new PatternHandler
+            {
+                Pattern = new Regex(pattern, RegexOptions.Compiled),
+                Handler = handler
+            });
+        }
+
+
+        private static void HandleLine(FetchResult result, Match match)
+        {
+            var item = new FetchItem
+            {
+                Status = Flags[match.Groups["flag"].Value],
+                Summary = match.Groups["summary"].Value,
+                From = match.Groups["from"].Value.Trim(),
+                To = match.Groups["to"].Value.Trim()
+            };
+
+            result.Items.Add(item);
+        }
+
+
+        private class PatternHandler
+        {
+            public Regex Pattern { get; set; }
+            public Action<FetchResult, Match> Handler { get; set; }
         }
     }
 }

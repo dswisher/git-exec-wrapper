@@ -46,8 +46,6 @@ namespace GitExecWrapper.Helpers
                 handleExitCode: code => (exitCode = code) <= 128,
                 cancellationToken: cancellationToken);
 
-            DebugHelpers.Dump(exitCode, stdout, stderr);    // TODO - remove this
-
             var parser = new FetchParser();
 
             if (exitCode != 0)
@@ -55,7 +53,7 @@ namespace GitExecWrapper.Helpers
                 parser.ThrowError(exitCode, stderr);
             }
 
-            return parser.ParseOutput(stdout);
+            return parser.ParseOutput(stdout, stderr);
         }
     }
 }

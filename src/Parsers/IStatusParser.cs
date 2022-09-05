@@ -5,7 +5,7 @@ using GitExecWrapper.Models;
 
 namespace GitExecWrapper.Parsers
 {
-    public interface IStatusParser
+    internal interface IStatusParser
     {
         StatusResult ParseOutput(string stdout);
         void ThrowError(int code, string stderr);

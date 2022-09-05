@@ -5,9 +5,9 @@ using GitExecWrapper.Models;
 
 namespace GitExecWrapper.Parsers
 {
-    public interface IFetchParser
+    internal interface IFetchParser
     {
-        FetchResult ParseOutput(string stdout);
+        FetchResult ParseOutput(string stdout, string stderr);
         void ThrowError(int code, string stderr);
     }
 }

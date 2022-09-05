@@ -9,7 +9,7 @@ using GitExecWrapper.Models;
 
 namespace GitExecWrapper.Parsers
 {
-    public class StatusParser : IStatusParser
+    internal class StatusParser : IStatusParser
     {
         private static readonly Dictionary<char, FileStatus> CodeMap = new Dictionary<char, FileStatus>();
         private static readonly List<PatternHandler> BranchHandlers = new List<PatternHandler>();

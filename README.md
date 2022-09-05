@@ -47,4 +47,5 @@ The `dotnet nuget` command also has an `update` verb that can be used to update 
 # Related Projects
 
 * [libgit2sharp](https://github.com/libgit2/libgit2sharp) - brings all the might and speed of libgit2, a native Git implementation, to the managed world of .NET
-* [simple-exec](https://github.com/adamralph/simple-exec) - A .NET library that runs external commands.
+* [simple-exec](https://github.com/adamralph/simple-exec) - A .NET library that runs external commands
+* [gitextensions](https://github.com/gitextensions/gitextensions) - a standalone UI tool for managing git repositories (C#)
