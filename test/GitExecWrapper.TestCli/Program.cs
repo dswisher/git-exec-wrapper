@@ -47,12 +47,16 @@ namespace GitExecWrapper.TestCli
         {
             switch (obj)
             {
-                case TestStatusOptions s:
-                    await TestStatusCommand.RunAsync(s, cancellationToken);
+                case TestBranchOptions o:
+                    await TestBranchCommand.RunAsync(o, cancellationToken);
                     break;
 
-                case TestFetchOptions f:
-                    await TestFetchCommand.RunAsync(f, cancellationToken);
+                case TestFetchOptions o:
+                    await TestFetchCommand.RunAsync(o, cancellationToken);
+                    break;
+
+                case TestStatusOptions o:
+                    await TestStatusCommand.RunAsync(o, cancellationToken);
                     break;
 
                 default:

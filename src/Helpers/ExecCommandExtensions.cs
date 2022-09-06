@@ -55,5 +55,30 @@ namespace GitExecWrapper.Helpers
 
             return parser.ParseOutput(stdout, stderr);
         }
+
+
+        public static async Task<BranchResult> ExecAsync(this BranchCommand command, CancellationToken cancellationToken = default)
+        {
+            var exitCode = 0;
+            var args = command.ToString();
+
+            var (stdout, stderr) = await SimpleExec.Command.ReadAsync(
+                "git",
+                args,
+                workingDirectory: command.RepoPath,
+                handleExitCode: code => (exitCode = code) <= 128,
+                cancellationToken: cancellationToken);
+
+            DebugHelpers.Dump(exitCode, stdout, stderr);    // TODO - remove this!
+
+            var parser = new BranchParser();
+
+            if (exitCode != 0)
+            {
+                parser.ThrowError(exitCode, stderr);
+            }
+
+            return parser.ParseOutput(stdout);
+        }
     }
 }

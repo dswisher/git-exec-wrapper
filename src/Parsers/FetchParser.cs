@@ -8,7 +8,7 @@ using GitExecWrapper.Models;
 
 namespace GitExecWrapper.Parsers
 {
-    internal class FetchParser : IFetchParser
+    internal class FetchParser
     {
         private static readonly Dictionary<string, RefStatus> Flags = new Dictionary<string, RefStatus>();
         private static readonly List<PatternHandler> BranchHandlers = new List<PatternHandler>();
