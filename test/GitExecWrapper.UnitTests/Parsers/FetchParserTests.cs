@@ -1,6 +1,7 @@
 // Copyright (c) Doug Swisher. All Rights Reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Runtime.InteropServices;
 using FluentAssertions;
 using GitExecWrapper.Models;
 using GitExecWrapper.Parsers;
@@ -70,6 +71,43 @@ namespace GitExecWrapper.UnitTests.Parsers
             result.Items[2].Status.Should().Be(RefStatus.UpToDate);
 
             result.Items[3].Status.Should().Be(RefStatus.Fetched);
+        }
+
+
+        [Fact]
+        public void CanParseHttps()
+        {
+            // Arrange
+            var stderr = OutputBuilder.Create()
+                .AddLine("POST git-upload-pack (155 bytes)")
+                .AddLine("From https://github.com/Example/fun-repo")
+                .AddLine(" = [up to date]      master        -> origin/master")
+                .AddLine(" = [up to date]      mac-packaging -> origin/mac-packaging");
+
+            // Act
+            var result = parser.ParseOutput(string.Empty, stderr.Build());
+
+            // Assert
+            result.FromRepo.Should().Be("https://github.com/Example/fun-repo");
+            result.Items.Should().HaveCount(2);
+        }
+
+
+        [Theory]
+        [InlineData("POST git-upload-pack (155 bytes)")]
+        [InlineData("POST git-upload-pack (gzip 1473 to 795 bytes)")]
+        [InlineData("Auto packing the repository in background for optimum performance.")]
+        [InlineData("See \"git help gc\" for manual housekeeping.")]
+        public void CanIgnoreStuff(string line)
+        {
+            // Arrange
+            var stderr = OutputBuilder.Create().AddLine(line);
+
+            // Act
+            var result = parser.ParseOutput(string.Empty, stderr.Build());
+
+            // Assert
+            result.Items.Should().HaveCount(0);
         }
     }
 }

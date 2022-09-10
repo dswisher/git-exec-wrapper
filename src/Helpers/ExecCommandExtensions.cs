@@ -69,8 +69,6 @@ namespace GitExecWrapper.Helpers
                 handleExitCode: code => (exitCode = code) <= 128,
                 cancellationToken: cancellationToken);
 
-            DebugHelpers.Dump(exitCode, stdout, stderr);    // TODO - remove this!
-
             var parser = new BranchParser();
 
             if (exitCode != 0)

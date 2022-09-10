@@ -15,6 +15,9 @@ namespace GitExecWrapper.UnitTests.Parsers
         [Theory]
         [InlineData("* main 826d737 Initial", true, "main", "826d737", null, "Initial")]
         [InlineData("  main    981421d [origin/main] Merge pull request #1", false, "main", "981421d", "origin/main", "Merge pull request #1")]
+        [InlineData("* main                0f231f5 [origin/main: ahead 1] Yet another", true, "main", "0f231f5", "origin/main", "Yet another")]
+        [InlineData("* 2.0    6c17d51 [origin/2.0] Update version to 2.0.3.325.", true, "2.0", "6c17d51", "origin/2.0", "Update version to 2.0.3.325.")]
+        [InlineData("  master d6d20bb [origin/master: behind 74] Update stuff", false, "master", "d6d20bb", "origin/master", "Update stuff")]
         public void CanParseOneBranch(string line, bool isCurrent, string branchName, string commitSha, string upstreamBranch, string message)
         {
             // Arrange

@@ -23,8 +23,12 @@ namespace GitExecWrapper.Parsers
             Flags.Add("!", RefStatus.Failed);
             Flags.Add("=", RefStatus.UpToDate);
 
-            AddPatternHandler(BranchHandlers, @"^ (?<flag>.) +(?<summary>\[[a-z ]+\]) +(?<from>.+) +-> +(?<to>.+)$", HandleLine);
-            AddPatternHandler(BranchHandlers, @"^ (?<flag>.) +(?<summary>[a-z0-9.]+) +(?<from>.+) -> (?<to>.+)$", HandleLine);
+            AddPatternHandler(BranchHandlers, @"^From (?<from>.*)$", HandleFromLine);
+            AddPatternHandler(BranchHandlers, @"^POST git-upload-pack \(.*\)$", IgnoreLine);
+            AddPatternHandler(BranchHandlers, @"^Auto packing the repository in background for optimum performance.$", IgnoreLine);
+            AddPatternHandler(BranchHandlers, @"^See ""git help gc"" for manual housekeeping.$", IgnoreLine);
+            AddPatternHandler(BranchHandlers, @"^ (?<flag>.) +(?<summary>\[[a-z ]+\]) +(?<from>.+) +-> +(?<to>.+)$", HandleBranchLine);
+            AddPatternHandler(BranchHandlers, @"^ (?<flag>.) +(?<summary>[a-z0-9.]+) +(?<from>.+) -> (?<to>.+)$", HandleBranchLine);
         }
 
 
@@ -35,18 +39,9 @@ namespace GitExecWrapper.Parsers
             // TODO - do we ever need to look at stdout?
 
             // Parse line-by-line
-            bool first = true;
             var lines = stderr.Split('\n', StringSplitOptions.RemoveEmptyEntries);
             foreach (var line in lines)
             {
-                // Ignore the first line, which should be the "From repo" text...
-                if (first)
-                {
-                    result.FromRepo = line.Substring("From ".Length);
-                    first = false;
-                    continue;
-                }
-
                 var matched = false;
                 foreach (var item in BranchHandlers)
                 {
@@ -87,7 +82,19 @@ namespace GitExecWrapper.Parsers
         }
 
 
-        private static void HandleLine(FetchResult result, Match match)
+        private static void IgnoreLine(FetchResult result, Match match)
+        {
+            // nothing to do
+        }
+
+
+        private static void HandleFromLine(FetchResult result, Match match)
+        {
+            result.FromRepo = match.Groups["from"].Value;
+        }
+
+
+        private static void HandleBranchLine(FetchResult result, Match match)
         {
             var item = new FetchItem
             {

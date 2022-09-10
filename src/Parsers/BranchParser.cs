@@ -14,8 +14,12 @@ namespace GitExecWrapper.Parsers
 
         static BranchParser()
         {
-            PatternHandler<BranchResult>.AddPatternHandler(BranchHandlers, @"^(?<current>.) +(?<name>[\w/_]+) +(?<commit>[0-9a-f]+) +\[(?<upstream>[\w/_]+)\] +(?<message>.*)$", HandleStuff);
-            PatternHandler<BranchResult>.AddPatternHandler(BranchHandlers, @"^(?<current>.) +(?<name>[\w/_]+) +(?<commit>[0-9a-f]+) +(?<message>.*)$", HandleStuff);
+            var branch = @"[\w\d/_.]+";
+            var prefix = @"^(?<current>.) +(?<name>" + branch + ") +(?<commit>[0-9a-f]+)";
+            var suffix = @" +(?<message>.*)$";
+
+            PatternHandler<BranchResult>.AddPatternHandler(BranchHandlers, prefix + @" +\[(?<upstream>" + branch + @")(?<delta>:.*)?\]" + suffix, HandleStuff);
+            PatternHandler<BranchResult>.AddPatternHandler(BranchHandlers, prefix + suffix, HandleStuff);
         }
 
 
@@ -59,17 +63,27 @@ namespace GitExecWrapper.Parsers
 
         private static void HandleStuff(BranchResult result, Match match)
         {
-            var upstream = match.Groups["upstream"].Value;
-
+            // Create the core item
             var item = new BranchItem
             {
                 IsCurrent = match.Groups["current"].Value == "*",
                 BranchName = match.Groups["name"].Value,
                 CommitSha = match.Groups["commit"].Value,
-                UpstreamBranch = string.IsNullOrEmpty(upstream) ? null : upstream,
                 Message = match.Groups["message"].Value
             };
 
+            // Handle special cases
+            if (match.Groups["upstream"].Length > 0)
+            {
+                item.UpstreamBranch = match.Groups["upstream"].Value;
+            }
+
+            if (match.Groups["delta"].Length > 0)
+            {
+                // TODO - pick out ahead and behind counts
+            }
+
+            // Add it to the list
             result.Items.Add(item);
         }
     }
