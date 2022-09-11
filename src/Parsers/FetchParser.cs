@@ -11,7 +11,7 @@ namespace GitExecWrapper.Parsers
     internal class FetchParser
     {
         private static readonly Dictionary<string, RefStatus> Flags = new Dictionary<string, RefStatus>();
-        private static readonly List<PatternHandler> BranchHandlers = new List<PatternHandler>();
+        private static readonly List<PatternHandler<FetchResult>> BranchHandlers = new List<PatternHandler<FetchResult>>();
 
         static FetchParser()
         {
@@ -23,20 +23,18 @@ namespace GitExecWrapper.Parsers
             Flags.Add("!", RefStatus.Failed);
             Flags.Add("=", RefStatus.UpToDate);
 
-            AddPatternHandler(BranchHandlers, @"^From (?<from>.*)$", HandleFromLine);
-            AddPatternHandler(BranchHandlers, @"^POST git-upload-pack \(.*\)$", IgnoreLine);
-            AddPatternHandler(BranchHandlers, @"^Auto packing the repository in background for optimum performance.$", IgnoreLine);
-            AddPatternHandler(BranchHandlers, @"^See ""git help gc"" for manual housekeeping.$", IgnoreLine);
-            AddPatternHandler(BranchHandlers, @"^ (?<flag>.) +(?<summary>\[[a-z ]+\]) +(?<from>.+) +-> +(?<to>.+)$", HandleBranchLine);
-            AddPatternHandler(BranchHandlers, @"^ (?<flag>.) +(?<summary>[a-z0-9.]+) +(?<from>.+) -> (?<to>.+)$", HandleBranchLine);
+            PatternHandler<FetchResult>.AddPatternHandler(BranchHandlers, @"^From (?<from>.*)$", HandleFromLine);
+            PatternHandler<FetchResult>.AddPatternHandler(BranchHandlers, @"^POST git-upload-pack \(.*\)$", IgnoreLine);
+            PatternHandler<FetchResult>.AddPatternHandler(BranchHandlers, @"^Auto packing the repository in background for optimum performance.$", IgnoreLine);
+            PatternHandler<FetchResult>.AddPatternHandler(BranchHandlers, @"^See ""git help gc"" for manual housekeeping.$", IgnoreLine);
+            PatternHandler<FetchResult>.AddPatternHandler(BranchHandlers, @"^ (?<flag>.) +(?<summary>\[[a-z ]+\]) +(?<from>.+) +-> +(?<to>.+)$", HandleBranchLine);
+            PatternHandler<FetchResult>.AddPatternHandler(BranchHandlers, @"^ (?<flag>.) +(?<summary>[a-z0-9.]+) +(?<from>.+) -> (?<to>.+)$", HandleBranchLine);
         }
 
 
         public FetchResult ParseOutput(string stdout, string stderr)
         {
             var result = new FetchResult();
-
-            // TODO - do we ever need to look at stdout?
 
             // Parse line-by-line
             var lines = stderr.Split('\n', StringSplitOptions.RemoveEmptyEntries);
@@ -72,16 +70,6 @@ namespace GitExecWrapper.Parsers
         }
 
 
-        private static void AddPatternHandler(List<PatternHandler> list, string pattern, Action<FetchResult, Match> handler)
-        {
-            list.Add(new PatternHandler
-            {
-                Pattern = new Regex(pattern, RegexOptions.Compiled),
-                Handler = handler
-            });
-        }
-
-
         private static void IgnoreLine(FetchResult result, Match match)
         {
             // nothing to do
@@ -105,13 +93,6 @@ namespace GitExecWrapper.Parsers
             };
 
             result.Items.Add(item);
-        }
-
-
-        private class PatternHandler
-        {
-            public Regex Pattern { get; set; }
-            public Action<FetchResult, Match> Handler { get; set; }
         }
     }
 }

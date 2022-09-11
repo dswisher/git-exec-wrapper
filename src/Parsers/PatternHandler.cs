@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace GitExecWrapper.Parsers
 {
-    public class PatternHandler<TResult>
+    internal class PatternHandler<TResult>
     {
         public Regex Pattern { get; set; }
         public Action<TResult, Match> Handler { get; set; }

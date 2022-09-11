@@ -12,7 +12,7 @@ namespace GitExecWrapper.Parsers
     internal class StatusParser
     {
         private static readonly Dictionary<char, FileStatus> CodeMap = new Dictionary<char, FileStatus>();
-        private static readonly List<PatternHandler> BranchHandlers = new List<PatternHandler>();
+        private static readonly List<PatternHandler<StatusResult>> BranchHandlers = new List<PatternHandler<StatusResult>>();
 
         private readonly Regex flagAndPath = new Regex(@"^(?<flag>.) (?<path>.+)$", RegexOptions.Compiled);
         private readonly Regex changedTracked = new Regex(
@@ -27,12 +27,13 @@ namespace GitExecWrapper.Parsers
             CodeMap.Add('!', FileStatus.Ignored);
             CodeMap.Add('M', FileStatus.Modified);
             CodeMap.Add('A', FileStatus.Added);
+            CodeMap.Add('D', FileStatus.Deleted);
 
-            AddPatternHandler(BranchHandlers, @"^# branch.ab \+(?<ahead>\d+) -(?<behind>\d+)$", SetAheadBehind);
-            AddPatternHandler(BranchHandlers, @"^# branch.oid (?<sha>.+)$", SetCurrentCommit);
-            AddPatternHandler(BranchHandlers, @"^# branch.head (?<name>.+)$", SetCurrentBranch);
-            AddPatternHandler(BranchHandlers, @"^# branch.upstream (?<name>.+)$", SetUpstream);
-            AddPatternHandler(BranchHandlers, @"^# stash (?<num>\d+)$", SetStashed);
+            PatternHandler<StatusResult>.AddPatternHandler(BranchHandlers, @"^# branch.ab \+(?<ahead>\d+) -(?<behind>\d+)$", SetAheadBehind);
+            PatternHandler<StatusResult>.AddPatternHandler(BranchHandlers, @"^# branch.oid (?<sha>.+)$", SetCurrentCommit);
+            PatternHandler<StatusResult>.AddPatternHandler(BranchHandlers, @"^# branch.head (?<name>.+)$", SetCurrentBranch);
+            PatternHandler<StatusResult>.AddPatternHandler(BranchHandlers, @"^# branch.upstream (?<name>.+)$", SetUpstream);
+            PatternHandler<StatusResult>.AddPatternHandler(BranchHandlers, @"^# stash (?<num>\d+)$", SetStashed);
         }
 
 
@@ -67,11 +68,26 @@ namespace GitExecWrapper.Parsers
                 {
                     if (itemMatch.Success)
                     {
+                        var indexFlag = itemMatch.Groups["flag"].Value.ToCharArray().First();
+                        var workDirFlag = itemMatch.Groups["flag"].Value.ToCharArray().Last();
+
+                        if (!CodeMap.ContainsKey(indexFlag))
+                        {
+                            // TODO - improved error handling
+                            throw new Exception($"Index flag '{indexFlag}' not handled: {line}");
+                        }
+
+                        if (!CodeMap.ContainsKey(workDirFlag))
+                        {
+                            // TODO - improved error handling
+                            throw new Exception($"Work dir flag '{workDirFlag}' not handled: {line}");
+                        }
+
                         var item = new StatusItem
                         {
                             Path = itemMatch.Groups["path"].Value,
-                            IndexStatus = CodeMap[itemMatch.Groups["flag"].Value.ToCharArray().First()],
-                            WorkDirStatus = CodeMap[itemMatch.Groups["flag"].Value.ToCharArray().Last()]
+                            IndexStatus = CodeMap[indexFlag],
+                            WorkDirStatus = CodeMap[workDirFlag]
                         };
 
                         var code = itemMatch.Groups["flag"].Value;
@@ -104,16 +120,6 @@ namespace GitExecWrapper.Parsers
         {
             // TODO - deduce some common errors, and throw a nice exception
             throw new Exception($"Boom! Status failed!\nCode:{code}\nStdErr:\n{stderr}");
-        }
-
-
-        private static void AddPatternHandler(List<PatternHandler> list, string pattern, Action<StatusResult, Match> handler)
-        {
-            list.Add(new PatternHandler
-            {
-                Pattern = new Regex(pattern, RegexOptions.Compiled),
-                Handler = handler
-            });
         }
 
 
@@ -168,13 +174,6 @@ namespace GitExecWrapper.Parsers
 
             // TODO - for now, during initial development, throw if we could not decode the line.
             throw new Exception($"Could not handle status pound line: {line}");
-        }
-
-
-        private class PatternHandler
-        {
-            public Regex Pattern { get; set; }
-            public Action<StatusResult, Match> Handler { get; set; }
         }
     }
 }

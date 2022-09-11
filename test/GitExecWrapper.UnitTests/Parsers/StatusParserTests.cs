@@ -39,6 +39,7 @@ namespace GitExecWrapper.UnitTests.Parsers
         [Theory]
         [InlineData("1 A. N..." + TrackedFile, FileStatus.Added, FileStatus.Unchanged, FilePath)]
         [InlineData("1 .M N..." + TrackedFile, FileStatus.Unchanged, FileStatus.Modified, FilePath)]
+        [InlineData("1 D. N..." + TrackedFile, FileStatus.Deleted, FileStatus.Unchanged, FilePath)]
         [InlineData("? " + FilePath, FileStatus.Unknown, FileStatus.Unknown, FilePath)]
         [InlineData("! " + DirPath, FileStatus.Unknown, FileStatus.Ignored, DirPath)]
         public void CanParseItems(string line, FileStatus expectedStagedStatus, FileStatus expectedUnstagedStatus, string expectedPath)

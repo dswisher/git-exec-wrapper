@@ -14,7 +14,7 @@ namespace GitExecWrapper.Parsers
 
         static BranchParser()
         {
-            var branch = @"[\w\d/_.]+";
+            var branch = @"[\w\d/_.-]+";
             var prefix = @"^(?<current>.) +(?<name>" + branch + ") +(?<commit>[0-9a-f]+)";
             var suffix = @" +(?<message>.*)$";
 

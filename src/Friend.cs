@@ -4,3 +4,4 @@
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("GitExecWrapper.UnitTests")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

@@ -55,6 +55,10 @@ namespace GitExecWrapper.TestCli
                     await TestFetchCommand.RunAsync(o, cancellationToken);
                     break;
 
+                case TestRemoteOptions o:
+                    await TestRemoteCommand.RunAsync(o, cancellationToken);
+                    break;
+
                 case TestStatusOptions o:
                     await TestStatusCommand.RunAsync(o, cancellationToken);
                     break;
